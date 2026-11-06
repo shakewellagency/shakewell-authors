@@ -1,0 +1,5 @@
+.shakewell-authors__list { margin: 0 0 8px; padding: 0; list-style: none; }
+.shakewell-authors__list li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding: 6px; margin: 0 0 4px; background: #f6f7f7; border: 1px solid #dcdcde; cursor: move; }
+.shakewell-authors__name { flex: 1 1 auto; }
+.shakewell-authors__results { margin: 4px 0 0; }
+.shakewell-authors__results li { margin: 0 0 2px; }
