@@ -1,10 +1,10 @@
 === Shakewell Multiple Authors ===
-Contributors: shakewell
+Contributors: shakewellagency
 Tags: authors, multiple authors, byline, co-authors, guest authors
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -91,6 +91,9 @@ No. The author list is not exposed there.
 Please do not open a public issue. Follow SECURITY.md in the plugin's repository.
 
 == Changelog ==
+
+= 0.1.1 =
+* Site-neutral release: metadata and documentation tidy-up, checked against the plugin directory guidelines. No change in behaviour.
 
 = 0.1.0 =
 * First release: Authors box, private author profiles, template functions, Co-Authors Plus import and verify commands.
