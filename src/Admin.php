@@ -100,7 +100,7 @@ final class Admin {
 	}
 
 	/**
-	 * Saves the submitted list. Needs the box nonce and permission to edit this post.
+	 * Saves the submitted list. Needs the box nonce and permission to change this post's authors.
 	 *
 	 * @param int $post_id Post id.
 	 */
@@ -110,7 +110,7 @@ final class Admin {
 			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['shakewell_authors_nonce'] ) ), self::NONCE )
 			|| ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 			|| ! in_array( get_post_type( $post_id ), Authors::post_types(), true )
-			|| ! current_user_can( 'edit_post', $post_id )
+			|| ! Caps::can_set( $post_id )
 		) {
 			return;
 		}

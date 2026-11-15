@@ -18,6 +18,7 @@ final class Plugin {
 	 * Registers hooks. Called on plugins_loaded.
 	 */
 	public static function boot(): void {
+		Caps::boot();
 		add_action( 'init', array( self::class, 'register_profiles' ) );
 		add_action( 'init', array( self::class, 'register_meta' ), 20 );
 
@@ -74,7 +75,7 @@ final class Plugin {
 					'sanitize_callback' => array( Authors::class, 'sanitize' ),
 					'auth_callback'     => static function ( $allowed, $key, $post_id ) {
 						unset( $allowed, $key );
-						return current_user_can( 'edit_post', $post_id );
+						return Caps::can_set( (int) $post_id );
 					},
 				)
 			);
