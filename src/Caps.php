@@ -7,8 +7,6 @@
 
 namespace Shakewell\Authors;
 
-use WP_Post;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -69,10 +67,20 @@ final class Caps {
 		if ( ! $user || ! $type ) {
 			return false;
 		}
-		if ( ! self::enabled() ) {
-			return user_can( $user, 'edit_post', $post_id );
+		$can = user_can( $user, 'edit_post', $post_id );
+		if ( $can && self::enabled() ) {
+			$can = user_can( $user, $type->cap->edit_others_posts );
 		}
-		return ! empty( $user->allcaps[ $type->cap->edit_others_posts ] ) && user_can( $user, 'edit_post', $post_id );
+		/**
+		 * Filters whether a user may change a post's author list. With edit rights on, the default needs the
+		 * post type's "edit others" capability, as Co-Authors Plus does, so an author-role owner cannot either.
+		 * Return true for the owner to relax that.
+		 *
+		 * @param bool $can     Default answer.
+		 * @param int  $post_id Post id.
+		 * @param int  $user_id User id.
+		 */
+		return (bool) apply_filters( 'shakewell_authors_can_set', $can, $post_id, (int) $user->ID );
 	}
 
 	/**
@@ -88,7 +96,7 @@ final class Caps {
 		if ( ! self::enabled() ) {
 			return $caps;
 		}
-		if ( empty( $args ) && $user_id && is_admin() ) {
+		if ( empty( $args ) && $user_id && is_admin() && (int) $user_id === get_current_user_id() ) {
 			return self::allow_save( $caps, (string) $cap, (int) $user_id );
 		}
 		$actions = array(

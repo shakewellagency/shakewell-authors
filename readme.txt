@@ -47,7 +47,7 @@ Off by default. Co-Authors Plus lets every co-author edit and delete the posts t
 
 A listed author is then treated like the post's own author, for the post types that have the Authors box. Core's "edit others" and "delete others" capabilities are swapped for the plain "edit" and "delete" ones, and the status capabilities stay, so the user's role still decides: an author role can edit a published post it is listed on, a contributor cannot. Saving from the classic editor is allowed for the post whose save nonce core has just checked, and only when the post author field is unchanged.
 
-A listed author cannot change the list. With edit rights on, changing authors needs the post type's "edit others" capability on the user's own role, so nobody can hand out access to the posts they were given.
+A listed author cannot change the list. With edit rights on, changing authors needs the post type's "edit others" capability on the user's own role, so nobody can hand out access to the posts they were given. That includes an author-role user on a post they wrote; a site can relax it with the `shakewell_authors_can_set` filter. A user who cannot change the list sees it read-only.
 
 = Importing from Co-Authors Plus =
 

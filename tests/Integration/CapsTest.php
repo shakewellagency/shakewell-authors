@@ -85,9 +85,29 @@ final class CapsTest extends WP_UnitTestCase {
 		$this->assertSame( array( "user:{$this->owner}", "user:{$this->co}" ), get_post_meta( $this->post, Authors::META, true ) );
 	}
 
+	public function test_an_author_role_owner_cannot_set_authors_unless_a_site_relaxes_it(): void {
+		$this->on();
+		$mine = self::factory()->post->create( array( 'post_author' => $this->co ) );
+		$this->assertFalse( Caps::can_set( $mine, $this->co ) );
+		add_filter( 'shakewell_authors_can_set', static fn( $can, $id, $uid ) => $can || (int) get_post_field( 'post_author', $id ) === $uid, 10, 3 );
+		$this->assertTrue( Caps::can_set( $mine, $this->co ) );
+		$this->assertFalse( Caps::can_set( $this->post, $this->co ) );
+	}
+
+	public function test_the_box_is_read_only_for_a_user_who_cannot_set_authors(): void {
+		$this->on();
+		wp_set_current_user( $this->co );
+		ob_start();
+		Admin::render( get_post( $this->post ) );
+		$html = ob_get_clean();
+		$this->assertStringNotContainsString( 'shakewell-authors-search', $html );
+		$this->assertStringNotContainsString( 'name="shakewell_authors[]"', $html );
+	}
+
 	public function test_classic_editor_save_is_allowed_once_for_the_verified_post(): void {
 		$this->on();
 		set_current_screen( 'edit-post' );
+		wp_set_current_user( $this->co );
 		$_POST = array( 'post_ID' => $this->post, 'post_author' => $this->owner );
 		do_action( 'check_admin_referer', 'update-post_' . $this->post, 1 );
 		// Core's first "edit others" check after the nonce, made while reading the form.
@@ -101,6 +121,7 @@ final class CapsTest extends WP_UnitTestCase {
 	public function test_classic_editor_save_is_refused_when_the_post_author_is_changed(): void {
 		$this->on();
 		set_current_screen( 'edit-post' );
+		wp_set_current_user( $this->co );
 		$_POST = array( 'post_ID' => $this->post, 'post_author' => $this->stranger );
 		do_action( 'check_admin_referer', 'update-post_' . $this->post, 1 );
 		$caps = apply_filters( 'map_meta_cap', array( 'edit_others_posts' ), 'edit_others_posts', $this->co, array() );

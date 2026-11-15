@@ -81,16 +81,21 @@ final class Admin {
 	 */
 	public static function render( \WP_Post $post ): void {
 		wp_nonce_field( self::NONCE, 'shakewell_authors_nonce' );
-		$refs = get_post_meta( $post->ID, Authors::META, true );
+		$refs     = get_post_meta( $post->ID, Authors::META, true );
+		$editable = Caps::can_set( $post->ID );
 		echo '<ol class="shakewell-authors__list" aria-label="' . esc_attr__( 'Authors, in order', 'shakewell-authors' ) . '">';
 		foreach ( Authors::sanitize( $refs ) as $ref ) {
 			$p     = Authors::parse( $ref );
 			$name  = Authors::name( $p['type'], $p['id'] );
 			$label = 'user' === $p['type'] ? __( 'User', 'shakewell-authors' ) : __( 'Profile', 'shakewell-authors' );
-			echo '<li><input type="hidden" name="shakewell_authors[]" value="' . esc_attr( $ref ) . '">';
+			echo '<li>' . ( $editable ? '<input type="hidden" name="shakewell_authors[]" value="' . esc_attr( $ref ) . '">' : '' );
 			echo '<span class="shakewell-authors__name">' . esc_html( $name ) . '</span> <em>(' . esc_html( $label ) . ')</em></li>';
 		}
 		echo '</ol>';
+		if ( ! $editable ) {
+			echo '<p class="description">' . esc_html__( 'You can edit this post but not change its authors.', 'shakewell-authors' ) . '</p>';
+			return;
+		}
 		echo '<p class="description">' . esc_html__( 'With no authors listed, the post author is used.', 'shakewell-authors' ) . '</p>';
 		echo '<p role="status" aria-live="polite" class="screen-reader-text shakewell-authors__status"></p>';
 		echo '<label for="shakewell-authors-search">' . esc_html__( 'Add an author', 'shakewell-authors' ) . '</label>';
