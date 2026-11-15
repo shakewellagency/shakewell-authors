@@ -96,7 +96,7 @@ final class Caps {
 		if ( ! self::enabled() ) {
 			return $caps;
 		}
-		if ( empty( $args ) && $user_id && is_admin() && (int) $user_id === get_current_user_id() ) {
+		if ( empty( $args ) && $user_id && is_admin() && get_current_user_id() === (int) $user_id ) {
 			return self::allow_save( $caps, (string) $cap, (int) $user_id );
 		}
 		$actions = array(
