@@ -4,7 +4,7 @@ Tags: authors, multiple authors, byline, co-authors, guest authors
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.1.1
+Stable tag: 0.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,14 @@ To use the box on other post types, add this to a plugin or theme:
 Both return plain text. Escape it when you print it:
 
 `<?php echo esc_html( shakewell_authors_names() ); ?>`
+
+= Edit rights for listed authors =
+
+Off by default. Co-Authors Plus lets every co-author edit and delete the posts they are listed on, even when someone else wrote the post. To keep that when switching, add `add_filter( 'shakewell_authors_edit_rights', '__return_true' );`.
+
+A listed author is then treated like the post's own author, for the post types that have the Authors box. Core's "edit others" and "delete others" capabilities are swapped for the plain "edit" and "delete" ones, and the status capabilities stay, so the user's role still decides: an author role can edit a published post it is listed on, a contributor cannot. Saving from the classic editor is allowed for the post whose save nonce core has just checked, and only when the post author field is unchanged.
+
+A listed author cannot change the list. With edit rights on, changing authors needs the post type's "edit others" capability on the user's own role, so nobody can hand out access to the posts they were given. That includes an author-role user on a post they wrote; a site can relax it with the `shakewell_authors_can_set` filter. A user who cannot change the list sees it read-only.
 
 = Importing from Co-Authors Plus =
 
@@ -91,6 +99,9 @@ No. The author list is not exposed there.
 Please do not open a public issue. Follow SECURITY.md in the plugin's repository.
 
 == Changelog ==
+
+= 0.2.0 =
+* Optional edit rights for listed authors, matching Co-Authors Plus, off by default. With it on, only users with the post type's edit others capability can change the author list.
 
 = 0.1.1 =
 * Site-neutral release: metadata and documentation tidy-up, checked against the plugin directory guidelines. No change in behaviour.
